@@ -1,44 +1,57 @@
-# Aula1
-Unitins
-class Stack:
+class OrdenedList:
     def __init__(self):
-        self.items = []
-
-    def push(self, item):
-        self.items.append(item)
-
-    def pop(self):
-        if not self.is_empty():
-            return self.items.pop()
-
-    def peek(self):
-        if not self.is_empty():
-            return self.items[-1]
+        self.head = None
 
     def is_empty(self):
-        return len(self.items) == 0
+        return self.head is None
+    
+    def insert(self, qtd, preco, descricao):
+        new_node = Node(qtd, preco, descricao)
 
-def reverse_string(input_string):
-    stack = Stack()
-    reversed_string = ""
+        if self.is_empty() or descricao <= self.head.descricao:
+            new_node.next = self.head 
+            self.head = new_node
+        else:
+            current = self.head
+            while current.next is not None and current.next.descricao < descricao:
+                current = current.next
+            new_node.next = current.next
+            current.next = new_node
 
-    # Insere cada caractere da string na pilha
-    for char in input_string:
-        stack.push(char)
+    def search(self, descricao):
+        current = self.head
+        while current is not None and current.descricao <= descricao:
+            if current.descricao == descricao:
+                return current
+            current = current.next
+        return None
+    
+    def remove(self, descricao):
+        if self.is_empty():
+            return None
+    
+        if self.head.descricao == descricao:
+            removed_node = self.head
+            self.head = self.head.next
+            return removed_node
+        
+        current = self.head
+        while current.next is not None and current.next.descricao < descricao:
+            current = current.next
+        
+        if current.next is None or current.next.descricao > descricao:
+            return None
+        
+        removed_node = current.next
+        current.next = current.next.next
+        return removed_node
 
-    # Remove cada caractere da pilha e adiciona ao resultado
-    while not stack.is_empty():
-        reversed_string += stack.pop()
+    def display(self):
+        if self.is_empty():
+            print("A lista ordenada está vazia!")
+        else:
+            current = self.head
+            while current:
+                print(f"Qtd: {current.qtd}, Preço: {current.preco}, Descrição: {current.descricao}")
+                current = current.next
 
-    return reversed_string
-
-# Função para testar a reversão de strings
-def test_reverse_string():
-    test_strings = ["hello", "world", "python", "stacks"]
-    for test_string in test_strings:
-        print(f"String original: {test_string}")
-        print(f"String invertida: {reverse_string(test_string)}")
-        print()
-
-# Testando a função de reversão de strings
-test_reverse_string()
